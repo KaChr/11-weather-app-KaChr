@@ -1,0 +1,8 @@
+.App-weather>ul{
+    list-style: none;
+}
+
+.App-weather>ul>li>img {
+    width: 100px;
+    height: 100px;
+}

@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Header, Content, Footer } from './components';
+import { Header, Content, Form, Footer } from './components';
 
 // import './App.css';
 
@@ -9,7 +9,7 @@ class App extends Component {
       <div className="App">
         <Header />
         <Content>
-          {/* <Form /> */}
+          <Form />
         </Content>
         <Footer />
       </div>
