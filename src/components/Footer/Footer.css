@@ -1,4 +1,7 @@
 .App-footer {
+    position: absolute;
+    bottom: 0;
+    display: flex;
     font-family: Impact, Haettenschweiler, 'Arial Narrow Bold', sans-serif;
     text-align: end;
 }

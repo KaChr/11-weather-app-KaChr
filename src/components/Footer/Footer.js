@@ -5,7 +5,7 @@ import './Footer.css';
 class Footer extends Component {
   render() {
     return (
-      <footer className="App-footer">
+      <footer className="App-footer footer">
         <p>KC2018</p>
       </footer>
     );
