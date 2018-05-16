@@ -8,6 +8,7 @@ class Day extends Component {
     }
 
     render() {
+        const { unit } = this.props;
         return (
             <div className="table-responsive">
                 <table className="table App-table">
@@ -24,7 +25,7 @@ class Day extends Component {
                         <tr>
                             <th scope="row">{this.props.interval.dt_txt}</th>
                             <td>
-                                <p>{this.props.interval.main.temp} &deg; C</p>
+                                <p>{this.props.interval.main.temp} &deg; {unit}</p>
                             </td>
                             <td>
                                 <p>{this.props.interval.weather[0].description}</p>
