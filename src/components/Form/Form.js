@@ -7,14 +7,67 @@ class Form extends Component {
     constructor() {
         super();
         this.state = {
+            time: {},
             weather: [],
             celcius: true,
             main: null,
-            unit: 'C'
+            unit: 'C',
+            weatherHere: {
+                wind: {},
+                speed: {},
+                main: {},
+                humidity: {},
+                sys: {},
+                sunrise: {},
+                sunset: {}
+            },
+            longitude: 0,
+            latitude: 0
         }
+        this.error = this.error.bind(this);
+        this.getLocation = this.getLocation.bind(this);
         this.handleChange = this.handleChange.bind(this);
     }
 
+    componentWillMount(){
+        navigator.geolocation.getCurrentPosition(this.getLocation, this.error);
+    }
+    
+    getLocation(position) {
+        this.setState({
+            latitude: position.coords.latitude,
+            longitude: position.coords.longitude
+        })
+      this.location();
+    }
+
+    error(){
+        alert('Could not find any result for your current location so here is the result for Stockholm instead. :)')
+        this.setState({
+            latitude: 59.334591,
+            longitude: 18.063240
+        })
+        this.location();
+    }
+
+    location() {
+        fetch(`http://api.openweathermap.org/data/2.5/weather?lat=${this.state.latitude}&lon=${this.state.longitude}&APPID=64a5d018d1e74df43bacb71c6a919c32&units=metric`)
+            .then(res => res.json())
+            .then(res => {
+                this.setState({
+                    weatherHere: res
+
+                }, function () {
+                    console.log(res);
+                    console.log('Is okey?', this.state.weatherHere);
+                }
+                );
+            })
+            .catch(function (error) {
+                console.log(error);
+            });
+        }
+    
     onSubmit(event) {
         event.preventDefault();
     
@@ -92,6 +145,7 @@ class Form extends Component {
                         }
                     } 
                 });
+        
                 this.setState({
                   unit: 'C',
                   main: {
@@ -113,17 +167,21 @@ class Form extends Component {
                         }
                     } 
                 });
-
+                
                 this.setState({
-                  unit: 'F',
-                  main: {
-                    temp: tempF
-                  },
-                  forecast: forecastF
+                    unit: 'F',
+                    main: {
+                        temp: tempF
+                    },
+                    forecast: forecastF
                 })
-              }
+            }
         });
-    } 
+    }
+
+    calculateTime(time) {
+        return new Date(time * 1e3).toISOString().slice(-13, -5);
+    }
 
     render() {
         const unit = this.state.unit;
@@ -134,12 +192,46 @@ class Form extends Component {
                     <input className="form-control mr-sm-2" type="text" placeholder="City name here" name="city" />
                     <button className="btn btn-outline-success my-2 my-sm-0" type="submit">Search</button>
                 </form>
+                <hr />
                 <form>
                     <input type="radio" name="temp" value={'F'} onChange={this.handleChange} id="temp-f" checked={this.state.unit === 'F'} disabled={!this.state.main} />
                     <label htmlFor="temp-f">Fahrenheit</label><br /> 
                     <input type="radio" name="temp" value={'C'} onChange={this.handleChange} id="temp-c" checked={this.state.unit === 'C'} disabled={!this.state.main} />
                     <label htmlFor="temp-c">Celsius</label>
                 </form>
+
+                {this.state.weatherHere.weather && this.state.weatherHere.weather.length > 0 ? 
+                    <div className="App-location">
+                        <ul>
+                            <li>
+                                <h3>My location: <strong>{this.state.weatherHere.name}</strong></h3>
+                            </li>
+                            <li>
+                                <img src={`http://openweathermap.org/img/w/${this.state.weatherHere.weather[0].icon}.png`} title="Weather icon" alt="Weather icon" />   
+                            </li>
+                            <li>
+                                <h2>{this.state.weatherHere.main.temp} &deg; {this.state.unit}</h2>
+                            </li>
+                            <li>
+                                <p>And {this.state.weatherHere.weather[0].description} outside.</p>
+                            </li>
+                            <li>
+                                <p>Current windspeed is {this.state.weatherHere.wind.speed}m/s.</p>
+                            </li>
+                            <li>
+                                <p>Current humidity is {this.state.weatherHere.main.humidity}%.</p>
+                            </li>
+                            <li>
+                                <p>Sunrise: {this.calculateTime(this.state.weatherHere.sys.sunrise)}</p>
+                            </li>
+                            <li>
+                                <p>Sunset: {this.calculateTime(this.state.weatherHere.sys.sunset)}</p>
+                            </li> 
+                        </ul>
+                </div> 
+                : ''
+                } 
+                <hr />
                 {this.state.weather && this.state.weather.length > 0 ? 
                     <div className="App-weather">
                         <ul>
@@ -166,7 +258,7 @@ class Form extends Component {
                             </li>
                         </ul>
                     </div>
-                    : <p>You have to search to get a result.</p>
+                    : ''
                 }
                 {this.state.forecast && this.state.forecast.length > 0 ?
                     <div className="App-forecast">
@@ -181,9 +273,6 @@ class Form extends Component {
         );
     }
 
-    calculateTime(time) {
-        return new Date(time * 1e3).toISOString().slice(-13, -5);
-    }
 }
 
 export default Form;
