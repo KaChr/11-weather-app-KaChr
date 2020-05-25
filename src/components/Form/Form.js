@@ -30,7 +30,7 @@ class Form extends Component {
     this.handleChange = this.handleChange.bind(this);
   }
 
-  componentWillMount() {
+  UNSAFE_componentWillMount() {
     navigator.geolocation.getCurrentPosition(this.getLocation, this.error);
   }
 
@@ -203,24 +203,23 @@ class Form extends Component {
   }
 
   render() {
-    const unit = this.state.unit;
 
     return (
       <div>
         <form
           className="form-inline my-2 my-lg-0 App-form"
           onSubmit={this.onSubmit.bind(this)}
-        >
+          >
           <input
             className="form-control mr-sm-2"
             type="text"
             placeholder="City name here"
             name="city"
-          />
+            />
           <button
             className="btn btn-outline-success my-2 my-sm-0"
             type="submit"
-          >
+            >
             Search
           </button>
         </form>
@@ -234,7 +233,7 @@ class Form extends Component {
             id="temp-f"
             checked={this.state.unit === "F"}
             disabled={!this.state.main && !this.state.weatherHere.main.temp}
-          />
+            />
           <label htmlFor="temp-f">Fahrenheit</label>
           <br />
           <input
@@ -245,7 +244,7 @@ class Form extends Component {
             id="temp-c"
             checked={this.state.unit === "C"}
             disabled={!this.state.main && !this.state.weatherHere.main.temp}
-          />
+            />
           <label htmlFor="temp-c">Celsius</label>
         </form>
 
@@ -266,7 +265,7 @@ class Form extends Component {
                     }.png`}
                     title="Weather icon"
                     alt="Weather icon"
-                  />
+                    />
                 </li>
                 <li>
                   <h2>
@@ -304,10 +303,10 @@ class Form extends Component {
             </div>
           ) : (
             ""
-          )
-        : (
-          ""
-        )}
+            )
+            : (
+              ""
+              )}
         <hr />
         {this.state.weather && this.state.weather.length > 0 ? (
           <div className="App-weather">
@@ -324,7 +323,7 @@ class Form extends Component {
                   }.png`}
                   title="Weather icon"
                   alt="Weather icon"
-                />
+                  />
               </li>
               <li>
                 <h2>
@@ -350,18 +349,18 @@ class Form extends Component {
           </div>
         ) : (
           ""
-        )}
+          )}
         {this.state.forecast && this.state.forecast.length > 0 ? (
           <div className="App-forecast">
             {this.state.forecast.map((interval, index) => {
               return (
                 <Day key={index} interval={interval} unit={this.state.unit} />
-              );
-            })}
+                );
+              })}
           </div>
         ) : (
           ""
-        )}
+          )}
       </div>
     );
   }
